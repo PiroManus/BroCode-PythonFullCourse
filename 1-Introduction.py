@@ -413,3 +413,174 @@ print(last_name)
 print(last_character)
 
 
+#Lesson 21: Function
+# a block of code which is executed only when it is called.
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+# what is given (Bro) is argument (information sending to function).
+# These match to parameters (first_name).
+def hello(first_name, last_name, age):
+    print("Hello "+first_name+" "+last_name)
+    print("You are "+ str(age) + " years old") # need to convert int to str.
+    print("Have a nice day!")
+
+hello("Bro", "Code", 33)
+
+
+#Lesson 22: Return statements
+# functions send Python values/objects back to the caller.
+# these values/objects are known as the function's return value
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+def multiply(number1, number2):
+    return number1 * number2
+
+x = multiply(6,8)
+print(x)
+
+
+#Lesson 23: Keyword Arguments
+# Arguments preceded by an identifier when we pass them to a function
+# The order of the arguments does not matte,r unlike positional arguments
+# Python knows the names of the arguments that our function receives
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+def hello(first,middle,last):
+    print("Hello "+first+" "+middle+" "+last)
+
+hello("Code", "Dude", "Bro") #these are positional arguments.
+hello(last="Code", middle="Dude", first="Bro") #these are keyword arguments.
+
+
+#Lesson 24: Nested Function Calls
+# function calls inside other function calls
+# innermost function calls are resolved first
+# return value is used as arugment for the next outer function.
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+num = input("Enter a whole positive number: ")
+print(num)
+num = float(num)
+print(num)
+num = abs(num)
+print(num)
+num = round(num)
+print(num)
+# this is a nested function call below. it combines all above functions.
+print(round(abs(float(input("Enter a whole positive number: ")))))
+
+
+#Lesson 25: Variable Scope
+# The region that a variable is recognized
+# A variable is only available from inside the region it is created.
+# A global and locally scoped version of a variable can be created.
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+name = "Bro" # global scope because global variable (available inside & outside functions)
+
+def display_name():
+    name = "Code" # local scope because local variable (available only inside this function)
+    print(name)
+# Will first use local variable first then Global full rule below for Python
+# LEGB Rule. Local. Then Enclosing. Then Global. Then Built-in.
+display_name()
+print(name)
+
+
+#Lesson 26: *args
+# parameter that will pack all arguments into a tuple (ordered, unchangable).
+# useful so that a function can accept a varying amount of arguments.
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+def add(*stuff):
+    sum = 0
+    #stuff = list(stuff) # if want to change an item in tuple, turn into list.
+    #stuff[0] = 0    # this turns the 1st item to 0.
+    for i in stuff:
+        sum += i
+    return sum
+print(add(1,2,3,4,5,6,7,8))
+
+
+#Lesson 27: **kwargs
+# parameter that will pack all arguments into a dictionary
+# useful so that a function can accept a varying amount of keyword arguments
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+def hello(**kwargs):  #just need the two **. Dont need to name it kwargs.
+    print("Hello "+ kwargs['first']+" "+kwargs['last'])
+    print("Hello",end=" ")
+    for key, value in kwargs.items():
+        print(value, end= " ")  #end=" " replaces the new line character (default) with space.
+
+hello(title="Mr.", first="Bro", middle="Dude", last="Code")
+
+
+#Lesson 28: String Format
+# str.format() = optional method that gives users more control when displaying outputs
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+animal = "cow"
+item = "moon"
+#print("The "+animal+" jumped over the "+item)  better way to write this is below.
+print("The {} jumped over the {}".format(animal, item))
+print("The {0} jumped over the {1}".format(animal, item))  #positional argument
+print("The {food} jumped over the {house}".format(house="tall", food="pizza"))  #keyword argument
+
+#another way to format:
+text = "The {} jumped over the {}"
+print(text.format(animal, item))
+
+name = "Bro"
+print("Hello, my name is {}".format(name)) #can add some padding.
+print("Hello, my name is {:10}".format(name))  #adding ten spacing worth of padding after name.
+print("Hello, my name is {:^10}".format(name)) #added center align. Can do right > or left <
+
+number = 1000
+print("The number pi is {:.3f}".format(number))  #adds 3 deciminal places.
+print("The number is {:,}".format(number)) #adds commas
+print("The number is {:b}".format(number)) #displays it in binary
+print("The number is {:o}".format(number)) #displays it in octodecimal
+print("The number is {:X}".format(number)) #displays it in hexidicimal.
+print("The number is {:E}".format(number))
+
+
+#Lesson 29: Random Numbers
+# creating psuedo random numbers.
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+import random
+x = random.randint(1,6) #random integir  between 1 and 6.
+y = random.random()     #random floating point number.
+
+my_list = ['rock', 'paper', 'scissors']
+z = random.choice(my_list)
+
+cards = [1,2,3,4,5,6,7,8,9,'J','Q','K','A']
+random.shuffle(cards)
+print(cards)
+
+
+#Lesson 30: Exception Handling
+# Exceptions are events detected during execution that interrupt the flow of a program.
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+try:
+    numerator = int(input("Enter a number to divide: "))
+    denominator = int(input("Enter a number to divide by: "))
+    results = numerator / denominator
+except ZeroDivisionError as e:
+    print(e)
+    print("You cannot divide by zero! Idiot!")
+except ValueError as e:
+    print(e)
+    print("Enter only numbers please.")
+except Exception as e:  #good pratice to put specific exceptions first.
+    print(e)
+    print("Something went wrong: ")
+else:
+    print(results)
+finally:  #should be at end as want to close files when done
+    print("This will always execute")
+
+
