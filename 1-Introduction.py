@@ -584,3 +584,248 @@ finally:  #should be at end as want to close files when done
     print("This will always execute")
 
 
+#Lesson 31: File Detection
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+import os
+path = "C:\\Users\\WilliamBillCorkery\\OneDrive - Iberia Advisory\\Desktop\\folder"
+# need to manually put in double back slashes
+if os.path.exists(path):
+    print("That location exists!")
+    if os.path.isfile(path):
+        print("That is a file")
+    elif os.path.isdir(path):
+        print("That is a directory")
+else:
+    print("That location does not exist")
+
+
+#Lesson 32: Read a File
+# this will read a file. need to created a plain text file called test.txt in project folder
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+try:
+    with open('test.txt') as file:  #will need file path and double-slashes if not here.
+        print(file.read())  #'with' will also close file after reading them.
+except FileNotFoundError:
+    print("That file was not found")
+
+
+#Lesson 33: Write a File
+#
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+text = "Hello \nThis is some text \nHave a good date!\n"# \n is a new line.
+with open('test.txt', 'w') as file: #by default the mode is r. but here it is set to w for write.
+    #mode 'a' will append the new lines to the file.
+    file.write(text)
+
+
+#Lesson 34: Copy a File
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+# copyfile() = copies contents of a file
+# copy()     = copyfile(0 + persmission mode + destination can be a directory
+# copy2()    = copy() + copies metadata (file's creation and modification times)
+
+import shutil  #good module to copy files.
+shutil.copyfile('test.txt', 'copy.txt') #this function has both a source (src) and a destination (dst)
+# if file is not in project folder, would need to list the file path.
+
+
+#Lesson 35: Move a file
+# move a file from projects folder to desktops folder.
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+import os
+source = "test.txt"
+destination = "C:\\Users\\WilliamBillCorkery\\OneDrive - Iberia Advisory\\Desktop\\text.txt"
+
+try: #recommend doing code in try/except block to handle issues.
+    if os.path.exists(destination):
+        print("There is already a file there")
+    else:
+        os.replace(source,destination)
+        print(source+" was moved")
+except FileNotFoundError:
+    print(source+" was not found")
+
+
+#Lesson 36: Delete a File
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+import os
+import shutil
+path = 'test.txt'
+
+try:
+    os.remove(path)     # delete a file
+    #os.rmdir(path)      # delete a file or empty folder
+    #shutil.rmtree(path) # delete files and/or folders
+except FileNotFoundError:
+    print("That file was not found")
+except PermissionError:
+    print("You do not have permission to delete that")
+except OSError:
+    print("That folder contains files")
+else:
+    print(path+" was deleted")
+
+
+#Lesson 37: Modules
+# a file containing python code. may contain functions, classes, etc.
+# Used with modular programming, which is to separate a program into parts.
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+# so this is a module (37-Modules). So lets say there is another module called messages and has two functions.
+# the first is hello() and the second is bye().
+#import messages as msg  # this imports the messages module as msg (makes it easier).
+#msg.hello()       # this would call the hello() function from the messages module.
+
+# another way to import is below.
+# it is longer at first but no longer need message or msg before function.
+#from messages import hello,bye  # cann also say import * which imports all. dont do this as huge.
+#hello()
+#bye()
+
+# prepackaged modules below.
+# can also go to python module index on python.org.
+help("modules")
+
+
+#Lesson 38: Rock, Paper, Scissors
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+import  random
+
+while True:
+    choices = ["rock", "paper", "scissors"]
+    computer = random.choice(choices)
+    player = None  # need to initalize player here.
+    while player not in choices:
+        player = input("rock, paper, or scissors?: ").lower()
+
+        if player == computer:
+            print("computer: ", computer)
+            print("player: ", player)
+            print("Tie!")
+        elif player == "rock":
+            if computer == "paper":
+                print("computer: ", computer)
+                print("player: ", player)
+                print("You lose!")
+            if computer == "scissors":
+                print("computer: ", computer)
+                print("player: ", player)
+                print("You win!")
+        elif player == "scissors":
+            if computer == "rock":
+                print("computer: ", computer)
+                print("player: ", player)
+                print("You lose!")
+            if computer == "paper":
+                print("computer: ", computer)
+                print("player: ", player)
+                print("You win!")
+        elif player == "paper":
+            if computer == "scissors":
+                print("computer: ", computer)
+                print("player: ", player)
+                print("You lose!")
+            if computer == "rock":
+                print("computer: ", computer)
+                print("player: ", player)
+                print("You win!")
+    play_again = input("Play again? (yes/no): ").lower()
+    if play_again != "yes":
+        break
+print("Bye!")
+
+
+#Lesson 39: Quiz Game
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# first create the shell of four functions that need.
+
+def new_game():
+     guesses = []
+     correct_guesses = 0
+     question_num = 1
+     for key in questions:
+         print("--------------------------")
+         print(key)
+         for i in options[question_num-1]:
+             print(i)
+         guess = input("Enter (A, B, C, or D): ")
+         guess = guess.upper()
+         guesses.append(guess)
+         correct_guesses += check_answer(questions.get(key), guess)
+         question_num += 1
+     display_score(correct_guesses, guesses)
+# ------------------------------------
+def check_answer(answer,guess):
+    if answer == guess:
+        print("Correct!")
+        return 1
+    else:
+        print("Wrong!")
+        return 0
+
+# ------------------------------------
+def display_score(correct_guesses, guesses):
+    print("--------------------------")
+    print("RESULTS")
+    print("--------------------------")
+    print("Answers: ", end=" ")
+    for i in questions:
+        print(questions.get(i), end=" ")
+    print()
+
+    print("Guesses: ", end=" ")
+    for i in guesses:
+        print(i, end=" ")
+    print()
+    score = int((correct_guesses/len(questions))*100)
+    print("Your score is: "+str(score)+"%")
+# ------------------------------------
+def play_again():
+    response = input("Do you want to play again? (Yes or no):")
+    response = response.upper()
+    if response == "YES":
+        return True
+    else:
+        return False
+
+questions = {"Who created Python?: " : "A",
+             "What year was Python created?: ": "B",
+             "Python is atributed to which comedy group?: ": "C",
+             "Is the Earth round?: ": "A"}
+
+options = [["A. Guido van Rossum", "B. Elon Musk", "C. Bill Gates", "D. Mark Zuckerburg"],
+           ["A. 1989", "B. 1991", "C. 2000", "D. 2016"],
+           ["A. Lonely Island", "B. Smosh", "C. Monty Python", "D. SNL"],
+           ["A. True", "B. False", "C. Sometimes", "D. What is the Earth?"]]
+
+new_game()
+while play_again():
+    new_game()
+
+print("Goodbye!")
+
+
+#Lesson 40: Object Oriented Programming (OOP)
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# object is an instance of a class. Combination of attributes (what object is/has, e.g. tall) and
+# methods (what object can do, e.g. sleep).
+
+#if program is large, pull class in a seperate module.
+# Dont need to pass in self into class.
+
+from car import Car
+car_1 = Car("Chevy", "Corvette", 2021, 'blue')
+# print(car_1.make)
+car_2 = Car("Ford", "Mustang", 2022, 'red')
+
+car_1.drive()
+car_2.stop()
+
+
