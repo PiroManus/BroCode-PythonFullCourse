@@ -829,3 +829,277 @@ car_1.drive()
 car_2.stop()
 
 
+#Lesson 41: Class Variables
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# class variable is declared inside class and is default normally.
+# instance variable is declared inside a constructor. Has unique value.
+
+from car import Car
+car_1 = Car("Chevy", "Corvette", 2021, 'blue')
+car_2 = Car("Ford", "Mustang", 2022, 'red')
+
+#Car.wheels = 2  #this changes all default wheels number
+
+
+#Lesson 42: Inheritance
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# classes can inherit attributes and methods from something else (usally another class).
+# so if Animal (parent class) is a class with move() and eat().
+# then have Dog (subclass/child class) has move(), bark(), and eat().
+# move() is overriden. eat(0 is inheritied. Bark() is new.
+
+#will keep all classes in same file for ease.
+#the reason want things in parent class if need to make changes,
+#only need to do it in one place.
+
+class Animal:
+    alive = True
+    def eat(self):
+        print("This animal is eating")
+    def sleep(self):
+        print("This animal is sleeping")
+
+class Rabbit(Animal):  #Rabbit is child class of Animal parent class
+    def run(self):
+        print("This rabbit is running")
+class Fish(Animal):
+    def swim(self):
+        print("This fish is swimming")
+class Hawk(Animal):
+    def fly(self):
+        print("This hawk is flying")
+
+rabbit = Rabbit()
+fish = Fish()
+hawk = Hawk()
+
+rabbit.run()
+fish.swim()
+hawk.fly()
+
+#print((rabbit.alive))
+#fish.eat()
+#hawk.sleep()
+
+
+#Lesson 43: Multilevel Inheritance
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+#Multi-level inerhtiance = when a derived (child) class inherits from
+#another derived (child) class
+
+class Organism:
+    alive = True
+class Animal(Organism):
+    def eat(self):
+        print("This Animal is eating")
+class Dog(Animal):
+    def bark(self):
+        print("This dog is barking")
+
+dog = Dog()
+print(dog.alive)
+dog.eat()
+dog.bark()
+
+
+#Lesson 44: Multiple  Inheritance
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+#Multiple Inheritance = when a child class is derived from more than one parent class
+
+#this is used when want to create a class that needs different attributes/methods from multiple classes.
+#so below some animals are both prey and predator (e.g. fish)
+class Prey:
+    def flee(self):
+        print("This animal flees")
+class Predator:
+    def hunt(self):
+        print("This animal is hunting")
+
+class Rabbit(Prey):
+    pass
+class Hawk(Predator):
+    pass
+class Fish(Prey, Predator):
+    pass
+
+rabbit = Rabbit()
+hawk = Hawk()
+fish = Fish()
+
+#as can be seen below, only fish has flee and hunt.
+#rabbit.flee()
+#hawk.hunt()
+#fish.hunt()
+#fish.flee()
+
+
+#Lesson 45: Method Overriding
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# method overridding is when a subclass (or child class)
+# can override a method of its parent class.
+
+#animal is parent class and rabbit is child class.
+class Animal:
+    def eat(self):
+        print("This animal is eating")
+class Rabbit(Animal):
+    def eat(self):
+        print("This rabbit is eating a carrot")
+
+rabbit = Rabbit()
+rabbit.eat()
+
+
+#Lesson 46: Method Chaining
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# Method chaining = calling multiple methods sequentially
+# each call performs an action on the same object and returns self
+
+class Car:
+    def turn_on(self):
+        print("You start the engine")
+        return self
+    def drive(self):
+        print("You drive the car")
+        return self
+    def brake(self):
+        print("You step on the brakes")
+        return self
+    def turn_off(self):
+        print("You turn off the engine")
+        return self
+
+car = Car()
+#car.turn_on()
+#car.drive()
+car.turn_on().drive()
+car.brake()\    #this backslash is introduced by program to make it more readable.
+    .turn_off()
+
+
+#Lesson 47: Super Function
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# super() = Function used to give access to the methods of a parent class.
+# Returns a temporary object of a parent class when used.
+
+#so with below, any similarities between square and cube,
+# can move to rectangle. This will decrease repeat code.
+class Rectangle:
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+class Square(Rectangle):
+    def __init__(self,length,width):
+        super().__init__(length,width)
+    def area(self):
+        return self.length*self.width
+class Cube(Rectangle):
+    def __init__(self,length, width, height):
+        super().__init__(length, width)
+        self.height = height
+    def volumne(self):
+        return self.length*self.width*self.height
+
+square = Square(3,3)
+cube = Cube(3,3,3)
+print(square.area())
+print(cube.volumne())
+
+
+#Lesson 48: Abstract Classes
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# Prevents a user from creating an object of that class +
+# compels a user to override abstract methods in a child class.
+# basically a form of checks and balances
+
+#abstract class = a class which contains one or more abstract methods.
+#abstract method = a method that has a declaration but doe not have an implementation.
+
+from abc import ABC, abstractmethod
+class Vehicle(ABC):  #this is class.
+    @abstractmethod   #this is a decorator.
+    def go(self):  #this is the method.
+        pass
+    @abstractmethod
+    def stop(self):
+        pass
+class Car(Vehicle):
+    def go(self):
+        print("You drive the car")
+    def stop(self):
+        print("This car is stopped")
+
+class Motorcycle(Vehicle):
+    def go(self):
+        print("You ride the motorcycle")
+    def stop(self):
+        print("This motorcycle is stopped")
+
+#vehicle = Vehicle()
+car = Car()
+motorcycle = Motorcycle()
+
+#if try to run this, get typeerror because abstract class.
+#vehicle.go()
+car.go()
+car.stop()
+motorcycle.go()
+motorcycle.stop()
+
+
+#Lesson 49: Objects as Arguments
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+class Car:
+    color = None
+class Motorcylce:
+    color = None
+
+# make sure this is not within class because then would be a method of car class.
+def change_color(vehicle, color): #argument names should be lower case.
+    vehicle.color = color
+
+car_1 = Car()
+car_2 = Car()
+car_3 = Car()
+bike_1 = Motorcylce()
+
+change_color(car_1, "red")
+change_color(car_2, "white")
+change_color(car_3, "blue")
+change_color(bike_1, "yellow")
+
+print(car_1.color)
+print(car_2.color)
+print(car_3.color)
+print(bike_1.color)
+
+
+#Lesson 50: Duck Typing
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# concept where the class of an objet is less important than the methods/attributes
+# class type is not checked if minimum methods/attributes are present.
+# "If it walks like a duck, and it quacks like a duck, then it must be a duck."
+
+class Duck:
+    def walk(self):
+        print("This duck is walking")
+    def talk(self):
+        print("this duck is quacking")
+class Chicken:
+    def walk(self):
+        print("This chicken is walking")
+    def talk(self):
+        print("this chieckn is clucking")
+class Person():
+    def catch(self, duck):
+        duck.walk()
+        duck.talk()
+        print("You caught the critter!")
+
+duck = Duck()
+chicken= Chicken()
+person = Person()
+
+#person.catch(duck)
+person.catch(chicken)
