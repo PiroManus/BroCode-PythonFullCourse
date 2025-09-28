@@ -2303,3 +2303,5 @@ photoimage = PhotoImage(file='racecar.png')
 myimage = canvas.create_image(0,0, image=photoimage, anchor=NW)
 
 window.mainloop()
+
+
