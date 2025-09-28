@@ -1103,3 +1103,262 @@ person = Person()
 
 #person.catch(duck)
 person.catch(chicken)
+
+
+#Lesson 51: Walrus Operator :=
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+# new to Python 3.8
+# assignment expression aka walrus operator
+# assigned values to variables as part of a lager expression
+
+happy = True
+print(happy)
+print(happy := True) #in this walrus operator, happy is assigned to True and printed in same line
+
+#example without walrus
+foods = list()
+while True:
+    food = input("What food do you like?: ")
+    if food == "quit":
+        break
+    foods.append(food)
+#example with walrus
+foods = list()
+while food := input("What food do you like?: ") != "quit":
+    foods.append(food)
+
+
+#Lesson 52: Functions to Variables
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+#This defines the function
+def hello():
+    print("Hello")
+
+#this calls the function.
+hello()
+
+#this will pring the location of the function in memory. It changes.
+print(hello)
+#these will be the same location as it is basically a function with two alias or names (hi and hello)
+hi = hello
+print(hi)
+
+say = print  #this is assigning print function to a variable.
+say("What! I cannot believe this works!")
+
+
+#Lesson 53: Higher Order Function
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+# Higher Order Functions = a function that either:
+# 1. accepts a function as an argument or
+# 2. returns a function (In Python, functions are also treated as objects)
+
+# example of a function as argument. loud and quiet go into hello as function arguments.
+def loud(text):
+    return text.upper()
+def quiet(text):
+    return text.lower()
+def hello(func):
+    text = func("Hello")
+    print(text)
+
+hello(loud)
+hello(quiet)
+
+# example of a returning a function
+def divisor(x):
+    def dividend(y):
+        return y/x
+    return dividend
+divide = divisor(2)
+print(divide(10))
+
+
+#Lesson 54: Lambda
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# lambda = function written in 1 line using lambda keyword.
+# Accepts any number of arguments (parameters), but only has one epxression.
+# (think of it as a shortcut)
+# (useful if needed for a short period of time, throw-away)
+
+# lambda parameters:expression
+
+def double(x):
+    return x * 2
+print(double(5))
+# this is the same as above lines of code.
+double = lambda x:x*2
+multiply = lambda x,y:x*y
+add = lambda x,y,z: x+y+z
+full_name = lambda first_name, last_name: first_name+" "+last_name
+age_check = lambda age: True if age >= 18 else False
+
+print(double(5))
+print(multiply(5,6))
+print(add(5,6,7))
+print(full_name("Bro", "Code"))
+print(age_check(18))
+
+
+#Lesson 55: Sort
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# sort() method = used with lists
+# sort() function = used with iterables
+
+#this is sorting simple lists, tuples, etc.
+students_0 = ("Squidward", "Sandy","Patrick","Spongebob","Mr. Krabs")
+sorted_students_0 = sorted(students_0)
+for i in sorted_students_0:
+    print(i)
+
+#this is for sorting complex things like list of tuples below.
+students = [("Squidward", "F", 60),
+            ("Sandy", "A", 33),
+            ("Patrick", "D", 36),
+            ("Spongebob", "B", 20),
+            ("Mr. Krabs", "C", 78)]
+
+students.sort() # can have students.sort(key=age) which will just sort by students age
+for i in students:
+    print(i)
+
+age = lambda ages:ages[2]
+students.sort(key=age) # can have students.sort(key=age) which will just sort by students age
+for i in students:
+    print(i)
+
+#sort doesnt work well with tuples. so can use sorted() function with tuples.
+grade = lambda grades:grades[1]
+sorted_stuents = sorted(students, key=grade, reverse=True) # this reverses it
+for i in sorted_stuents:
+    print(i)
+
+
+#Lesson 56: Map
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# map() = applies a function to each itme in an iterable (list, tuple, etc.)
+# map(function, iterable) so it accepts two arguments
+
+#list of tuples
+store = [("shirt", 20.00),
+          ("pants", 25.00),
+          ("jacket", 50.00),
+          ("socks", 10.00)]
+
+# one USD is 0.82 euros
+to_euros = lambda  data:(data[0], data[1]*0.82)
+to_dollars = lambda  data:(data[0], data[1]/0.82)
+
+#store_euros = list(map(to_euros, store))
+#for i in store_euros:
+#    print(i)
+
+store_dolalrs = list(map(to_dollars, store))
+for i in store_dolalrs:
+    print(i)
+
+
+#Lesson 57: Filter
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# filter() = creates a collection of elements from an iterable for which a function returns True
+# filter(function, iterable) so it accepts two arguments
+
+friends = [("Rachel", 19),
+           ("Monica", 18),
+           ("Phobe", 17),
+           ("Joey", 16),
+           ("Chandler", 21),
+           ("Ross", 20)]
+
+age = lambda data:data[1] >= 18
+drinking_buddies = list(filter(age, friends))  # the list() is casting it back into a new list, drinking_buddies
+for i in drinking_buddies:
+    print(i)
+
+
+#Lesson 58: Reduce
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# reduce()= apply a function to a iterable and reduce it to a single cumulative value.
+# performs function on first tow elements and repeats process until 1 value remains.
+
+# reduce(function, iterable)
+
+import functools
+
+letters = ["H", "E", "L", "L", "O"]
+word = functools.reduce(lambda x,y,:x+y, letters)
+print(word)
+
+factorial = [5,4,3,2,1]
+results = functools.reduce(lambda x,y,:x*y, factorial)
+print(results)
+
+
+#Lesson 59: List Comprehensions
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# list comprehension = a way to create a new list with less syntax
+# can mimic certain lambda functions, easier to read
+# list = [expression for item in iterable if conditional] <-- if one if condition
+# list = [expression (if/else) for item in iterable]      <-- if have if/else condition
+
+squares = []                # create an empty list
+for i in range(1,11):       # create a for loop
+    squares.append(i*i)     # define what each loop iteration should do
+print(squares)
+
+squares1 = [i*i for i in range(1,11)]
+print(squares1)
+
+#using lambda
+students = [100,90,80,70,60,50]
+passed_students = list(filter(lambda x:x>=60, students))
+print(passed_students)
+
+#using list comprehension
+passed_students1 = [i for i in students if i>=60]
+passed_students2 = [i if i>=60 else "Failed" for i in students]
+print(passed_students1)
+print(passed_students2)
+
+
+#Lesson 60: Dictionary Comprehension
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# Dictionary Comprehension = create dictionaries using an expression
+# can replace for loops and certain lambda functions
+
+# 1: dictionary = {key: expression for (key,value) in iterable}
+# 2: dictionary = {key: expression for (key,value) in iterable if conditional}
+# 3: dictionary = {key:(if/else) for (key,value) in iterable}
+# 4: dictionary = {key: function(value) for (key,value) in iterable}
+
+# Dictionary version 1
+cities_in_F = {'New York': 32, 'Boston': 75, 'Los Angeles':100, 'Chicago':50}
+cities_in_C = {key: round((value-32)*(5/9)) for (key,value) in cities_in_F.items()}
+print(cities_in_C )
+
+# Dictionary version 2
+weather = {'New York': "snowing", 'Boston': "sunny", 'Los Angeles':"sunny", 'Chicago':"cloudy"}
+sunny_weather = {key: value for (key, value) in weather.items() if value == "sunny"}
+print(sunny_weather)
+
+# Dictionary version 3
+cities = {'New York': 32, 'Boston': 75, 'Los Angeles':100, 'Chicago':50}
+desc_cities3 = {key:("Warm" if value >=40 else "Cold") for (key,value) in cities.items()}
+print(desc_cities3)
+
+# Dictionary version 4
+def check_temp(value):
+    if value>= 70:
+        return "Hot"
+    elif 69>=value >=40:
+        return "Warm"
+    else:
+        return "Cold"
+cities = {'New York': 32, 'Boston': 75, 'Los Angeles':100, 'Chicago':50}
+desc_cities4  = {key:check_temp(value) for (key,value) in cities.items()}
+print(desc_cities4)
+
+
