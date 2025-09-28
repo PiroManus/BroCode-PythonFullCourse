@@ -2369,3 +2369,631 @@ while True:
     time.sleep(0.02)
 
 window.mainloop()
+
+
+#Lesson 93: Clock Program
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+from time import *
+
+def update():
+    time_string = strftime("%I:%M:%S %p")
+    time_label.config(text=time_string)
+
+    day_time_string = strftime("%A")
+    day_time_label.config(text=day_time_string)
+
+    date_time_string = strftime("%B %d, %Y")
+    date_time_label.config(text=date_time_string)
+
+    window.after(1000,update)   #this is 1000 miliseconds. this is also recurisve as update is called.
+
+window = Tk()
+
+time_label = Label(window, font=("Arial", 50), fg="blue", bg="black")
+time_label.pack()
+
+day_time_label = Label(window, font=("Inke Free", 25))
+day_time_label.pack()
+
+date_time_label = Label(window, font=("Inke Free", 50))
+date_time_label.pack()
+
+
+update()
+
+window.mainloop()
+
+
+#Lesson 94: Send an email
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+import smtplib
+
+send = 'sender@gmail.com'  #use own email
+receiver = 'receiver@gmail.com'
+password = 'password123'
+subject = 'python email test'
+body = 'I wrote an email'
+
+message = f"""From: Python test{sender}
+To: Receiver{receiver}
+Subject: {subject}\n
+{body}
+"""
+server = smtplib.SMTP("smtp.gmail.com", 587)  #587 is default mail submission port.
+server.starttls()
+
+try:
+    server.login(sender, password)
+    print("Logged in...")
+    server.sendmail(sender, receiver, message)
+    print("Email has been sent!")
+    #may ecounter SMTPAuthenticationError. this means username and password were not accepted OR
+    # need to turn on less secure on gmail.
+except smtplib.SMTPAuthenticationError:
+    print('Unable to sign in')
+
+
+#Lesson 95: Run with command prompt
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+# ******************
+# run .py file with cmd
+# save file as .py (Python file)
+# go to command prompt
+# navigate to directory with your file: C:\Users\WilliamBillCorkery\PycharmProjects\BroCode-PythonFullCourse
+# invole python interpreter + script: python "95-Run with command prompt.py"
+
+print("Hello World!")
+
+name = input('What is your name?:  ')
+print("Hello "+name)
+
+
+#Lesson 96: Pip
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+# ************************************
+# Python pip
+# ************************************
+# pip = package manager for packages and modules from Python Package index
+# Python package index is pypi.org. full list of packages.
+#
+# included for Python versions 3.4+
+# open command prompt
+#   help:                       pip
+#   check:                      pip --version
+#   update:                     pip install --upgrade pip
+#   installed packages:         pip list
+#   check outdated packages:    pip list --outdated
+#   install a package:          pip install "package name"
+
+#chceked status of packages. 
+
+
+#Lesson 97: Py to exe
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+# windows defender may preent you from running
+# make sure pip and pyinstaller are installed/updated
+
+# to to cmd. Need to change directory of command prompt so that it points to file
+# cd to directory that contains your .py file
+# pyinstaller -F -x -i icon.ico
+# -F is all in 1 file
+# -w removed terminal window
+# -i icon.ico adds custom icon to .exe
+# clock.py name of your main python file
+# .exe is located in the dist folder.
+# can change image to ICO at icoconvert.com. move it to folder.
+
+# clock program succesfully made and is in dist file. 
+
+
+#Lesson 98: calculator Program
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+
+def button_press(num):
+    global equation_text
+    equation_text = equation_text + str(num)
+    equation_label.set(equation_text)
+
+def equals():
+    global equation_text
+    try:
+        total = str(eval(equation_text))
+        equation_label.set(total)
+        equation_text = total
+    except SyntaxError:
+        equation_label.set("syntax error")
+        equation_text = ""
+    except ZeroDivisionError:
+        equation_label.set("arithmetic error")
+        equation_text = ""
+
+def clear():
+    global equation_text
+    equation_label.set("")
+    equation_text = ""
+
+window = Tk()
+window.title("Calculator Program")
+window.geometry('500x500')
+
+equation_text = ""
+
+equation_label = StringVar()
+
+label = Label(window,textvariable=equation_label, font=('consolas', 20),
+              bg='white', width=24, height=2)
+label.pack()
+
+frame = Frame(window)
+frame.pack()
+
+button1 = Button(frame, text=1, height=4, width=9, font=35,
+                 command=lambda: button_press(1))
+button1.grid(row=0, column=0)
+
+button2 = Button(frame, text=2, height=4, width=9, font=35,
+                 command=lambda: button_press(2))
+button2.grid(row=0, column=1)
+
+button3 = Button(frame, text=3, height=4, width=9, font=35,
+                 command=lambda: button_press(3))
+button3.grid(row=0, column=2)
+
+button4 = Button(frame, text=4, height=4, width=9, font=35,
+                 command=lambda: button_press(4))
+button4.grid(row=1, column=0)
+
+button5 = Button(frame, text=5, height=4, width=9, font=35,
+                 command=lambda: button_press(5))
+button5.grid(row=1, column=1)
+
+button6 = Button(frame, text=6, height=4, width=9, font=35,
+                 command=lambda: button_press(6))
+button6.grid(row=1, column=2)
+
+button7 = Button(frame, text=7, height=4, width=9, font=35,
+                 command=lambda: button_press(7))
+button7.grid(row=2, column=0)
+
+button8 = Button(frame, text=8, height=4, width=9, font=35,
+                 command=lambda: button_press(8))
+button8.grid(row=2, column=1)
+
+button9 = Button(frame, text=9, height=4, width=9, font=35,
+                 command=lambda: button_press(9))
+button9.grid(row=2, column=2)
+
+button0 = Button(frame, text=0, height=4, width=9, font=35,
+                 command=lambda: button_press(0))
+button0.grid(row=3, column=0)
+
+plus = Button(frame, text='+', height=4, width=9, font=35,
+                 command=lambda: button_press('+'))
+plus.grid(row=0, column=3)
+
+minus = Button(frame, text='-', height=4, width=9, font=35,
+                 command=lambda: button_press('-'))
+minus.grid(row=1, column=3)
+
+multiply = Button(frame, text='*', height=4, width=9, font=35,
+                 command=lambda: button_press('*'))
+multiply.grid(row=2, column=3)
+
+divide = Button(frame, text='/', height=4, width=9, font=35,
+                 command=lambda: button_press('/'))
+divide.grid(row=3, column=3)
+
+equal = Button(frame, text='=', height=4, width=9, font=35,
+                 command=equals)
+equal.grid(row=3, column=2)
+
+decimal = Button(frame, text='.', height=4, width=9, font=35,
+                 command=lambda: button_press('.'))
+decimal.grid(row=3, column=1)
+
+clear = Button(window, text='clear', height=4, width=12, font=35,
+               command=clear)
+clear.pack()
+
+window.mainloop()
+
+
+#Lesson 99: Text Editor Program
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+import os
+from tkinter import *
+from tkinter import filedialog, colorchooser, font
+from tkinter.messagebox import *
+from tkinter.filedialog import *
+
+def change_color():
+    color = colorchooser.askcolor(title="pick a color")
+    text_area.config(fg=color[1])
+
+def change_font(*args):
+    text_area.config(font=(font_name.get(), size_box.get()))
+
+def new_file():
+    window.title("Untitled")
+    text_area.delete(1.0,END)
+
+
+# This original code below did not work. Error was "_tkinter.TclError: bad option "-file": must be -defaultextension, -filetypes, -initialdir, 
+    # file = askopenfilename(defaultextension=".txt",file=[("All Files", "*.*"),("Text Documents", "*.txt")])
+#replaced with this. Using this website. https://stackoverflow.com/questions/51071984/tkinter-askopenfilename-wont-open
+    # file = filedialog.askopenfilename(title="Open Filename",filetypes=(("TXT Files","*.txt"),("All Files","*.*")))
+
+def open_file():
+    file = filedialog.askopenfilename(title="Open Filename",filetypes=(("TXT Files","*.txt"),("All Files","*.*")))
+
+    if file is None:
+        return
+    else:
+        try:
+            window.title(os.path.basename(file))
+            text_area.delete(1.0, END)
+        
+            file = open(file, "r")
+        
+            text_area.insert(1.0,file.read())
+        # better to name specific exceptions
+        except Exception:
+            print("Could not read file")
+        finally: 
+            file.close() 
+
+def save_file():
+    file = filedialog.asksaveasfilename(initialfile= "untitled.txt", defaultextension=".txt", 
+                                        filetypes=[("All Files", "*.*"), 
+                                                   ("Text Document", "*.txt")])
+
+    if file is None:
+        return
+    else:
+        try:
+            window.title(os.path.basename(file))
+            file = open(file, "w")
+            file.write(text_area.get(1.0, END))
+        except Exception:
+            print("Could not save file")
+        finally:
+            file.close()
+
+def cut():
+    text_area.event_generate("<<Cut>>")
+
+def copy():
+    text_area.event_generate("<<Copy>>")
+
+def paste():
+    text_area.event_generate("<<Paste>>")
+
+def about():
+    showinfo("About this program", "This is a program written by Billy!!!")
+
+def quit():
+    window.destroy()
+
+window = Tk()
+window.title("Text Editor Program")
+file = None
+
+window_width = 500
+window_height = 500
+screen_width = window.winfo_screenwidth()
+screen_height = window.winfo_screenheight()
+
+x = int((screen_width/2)-(window_width/2))
+y = int((screen_height/2)-(window_height/2))
+
+window.geometry("{}x{}+{}+{}".format(window_width, window_height, x, y))
+
+font_name = StringVar(window)
+font_name.set("Arial")
+
+font_size = StringVar(window)
+font_size.set("25")
+
+text_area = Text(window,font=(font_name.get(), font_size.get()))
+
+scroll_bar = Scrollbar(text_area)
+window.grid_rowconfigure(0,weight=1)
+window.grid_columnconfigure(0,weight=1)
+text_area.grid(sticky=N + E + S + W)
+scroll_bar.pack(side=RIGHT, fill=Y)
+text_area.config(yscrollcommand=scroll_bar.set)
+
+frame = Frame(window)
+frame.grid()
+
+color_button = Button(frame, text = "color", command=change_color)
+color_button.grid(row=0, column=0)
+
+font_box = OptionMenu(frame,font_name, *font.families(), command=change_font)
+font_box.grid(row=0, column=1)
+
+size_box = Spinbox(frame, from_=1,to=100, textvariable=font_size, command=change_font)
+size_box.grid(row=0, column=2)
+
+menu_bar = Menu(window)
+window.config(menu = menu_bar)
+
+file_menu = Menu(menu_bar, tearoff=0)
+menu_bar.add_cascade(label = "File", menu=file_menu)
+file_menu.add_command(label = "New", command = new_file)
+file_menu.add_command(label = "Open", command = open_file)
+file_menu.add_command(label = "Save", command = save_file)
+file_menu.add_separator()
+file_menu.add_command(label = "Exit", command = quit)
+
+edit_menu = Menu(menu_bar, tearoff = 0)
+menu_bar.add_cascade(label = "Edit", menu=edit_menu)
+edit_menu.add_command(label="Cut", command=cut)
+edit_menu.add_command(label="Copy", command=copy)
+edit_menu.add_command(label="Paste", command=paste)
+
+help_menu = Menu(menu_bar, tearoff=0)
+menu_bar.add_cascade(label = "Help", menu=help_menu)
+help_menu.add_command(label="About", command=about)
+
+
+
+window.mainloop()
+
+
+#Lesson 100: Tic Tac Tow Game
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+import random
+
+def next_turn(row, column):
+    global player
+    if buttons[row][column]['text'] == "" and check_winner() is False:
+        if player == players[0]:
+            buttons[row][column]['text'] = player
+            if check_winner() is False:
+                player = players[1]
+                label.config(text = (players[1]+" turn"))
+            elif check_winner() is True:
+                label.config(text = (players[0]+ " wins"))
+            elif check_winner() == "Tie":
+                label.config(text =("Tie!"))
+        else:
+            buttons[row][column]['text'] = player
+            if check_winner() is False:
+                player = players[0]
+                label.config(text = (players[0]+" turn"))
+            elif check_winner() is True:
+                label.config(text = (players[1]+ " wins"))
+            elif check_winner() == 'Tie':
+                label.config(text =("Tie!"))
+
+def check_winner():
+    #need to check all horizontal win conditions with for loop
+    for row in range(3):
+        if buttons[row][0]['text'] == buttons[row][1]['text']== buttons[row][2]['text'] != "": 
+            buttons[row][0].config(bg="green")
+            buttons[row][1].config(bg="green")
+            buttons[row][2].config(bg="green")
+            return True
+    for column in range(3):
+        if buttons[0][column]['text'] == buttons[1][column]['text']== buttons[2][column]['text'] != "": 
+            buttons[0][column].config(bg="green")
+            buttons[1][column].config(bg="green")
+            buttons[2][column].config(bg="green")
+            return True
+    if buttons[0][0]['text'] == buttons[1][1]['text'] == buttons[2][2]['text'] != "":
+        buttons[0][0].config(bg="green")
+        buttons[1][1].config(bg="green")
+        buttons[2][2].config(bg="green")
+        return True
+    elif buttons[0][2]['text'] == buttons[1][1]['text'] == buttons[2][0]['text'] != "":
+        buttons[0][2].config(bg="green")
+        buttons[1][1].config(bg="green")
+        buttons[2][0].config(bg="green")
+        return True
+    elif empty_spaces() is False:
+        for row in range(3):
+            for column in range(3):
+                buttons[row][column].config(bg="yellow")
+        return "Tie"
+    else:
+        return False
+    
+def empty_spaces():
+    spaces = 9
+    for row in range(3):
+        for column in range(3):
+            if buttons[row][column]['text'] != "":
+                spaces -=1
+    if spaces == 0:
+        return False
+    else:
+        return True
+
+def new_game():
+    global player
+    player = random.choice(players)
+    label.config(text=player+" turn")
+    for row in range(3):
+        for column in range(3):
+            buttons[row][column].config(text="", bg="#F0F0F0")
+
+window = Tk()
+window.title("Tic-Tac-Toe")
+players = ["x", "o"] #this can be changed if want. 
+player = random.choice(players)
+buttons = [[0,0,0], [0,0,0], [0,0,0]]
+
+label = Label(text=player + " turn", font=("consolas",40))
+label.pack(side="top")
+
+reset_button = Button(text="restart", font=("consolas",20), command=new_game)
+reset_button.pack(side="top")
+
+frame = Frame(window)
+frame.pack()
+
+#nested for loop. 3 row and 3 column matrix. 
+for row in range(3):
+    for column in range (3):
+        buttons[row][column] = Button(frame, text="", 
+                                      font=("consolas",40),
+                                      width = 2, height=2, 
+                                      command = lambda row = row, column = column: next_turn(row, column))
+        buttons[row][column].grid(row=row, column=column)
+
+
+window.mainloop()
+
+
+#Lesson 101: Snake Game
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+import random
+
+# best practices to place contants at top. 
+# python no constants but placing here for convenince. 
+# name convention for constant is uper case. 
+GAME_WIDTH = 1000
+GAME_HEIGHT = 600
+SPEED = 200
+SPACE_SIZE = 50
+BODY_PARTS = 3
+SNAKE_COLOR = "#00FF00" #green
+FOOD_COLOR = "#FF0000" #red
+BACKGROUND_COLOR = "#FFFFFF" #black
+
+class Snake:
+    def __init__(self):
+        self.body_size = BODY_PARTS
+        self.coordinates = []
+        self.squares = []
+        
+        for i in range(0,BODY_PARTS):
+            self.coordinates.append([0,0])
+        for x, y in self.coordinates:
+            square = canvas.create_rectangle(x,y,x+SPACE_SIZE, y+SPACE_SIZE, fill=SNAKE_COLOR, tag="snake")
+            self.squares.append(square)
+
+
+class Food:
+    def __init__(self):
+        x = random.randint(0, (GAME_WIDTH/SPACE_SIZE)-1) * SPACE_SIZE
+        y = random.randint(0, (GAME_HEIGHT/SPACE_SIZE)-1) * SPACE_SIZE
+        self.coordinates = [x,y]
+        canvas.create_oval(x,y,x+ SPACE_SIZE, y +SPACE_SIZE, fill=FOOD_COLOR, tag="food")
+
+def next_turn(snake, food):
+    x,y = snake.coordinates[0]
+    if direction == "up":
+        y -= SPACE_SIZE
+    elif direction == "down":
+        y +=SPACE_SIZE
+    elif direction == "left":
+        x-=SPACE_SIZE
+    elif direction == "right":
+        x += SPACE_SIZE
+
+    snake.coordinates.insert(0,(x,y))
+    square = canvas.create_rectangle(x,y,x+SPACE_SIZE, y+SPACE_SIZE, fill=SNAKE_COLOR)
+    snake.squares.insert(0,square)
+    
+    if x == food.coordinates[0] and y == food.coordinates[1]:
+        global score
+        score += 1
+        label.config(text="Score:{}".format(score))
+        canvas.delete('food')
+        food = Food()
+    
+    else: 
+        del snake.coordinates[-1]
+        canvas.delete(snake.squares[-1])
+        del snake.squares[-1]
+    
+    if check_collisions(snake):
+        game_over()
+    else:
+        window.after(SPEED, next_turn, snake, food)
+
+def change_direction(new_direction):
+    global direction
+    if new_direction == 'left':
+        if direction!= 'right':
+            direction = new_direction
+    elif new_direction == 'right':
+        if direction!= 'left':
+            direction = new_direction
+    elif new_direction == 'up':
+        if direction!= 'down':
+            direction = new_direction            
+    elif new_direction == 'down':
+        if direction!= 'up':
+            direction = new_direction
+
+def check_collisions(snake):
+    x,y, = snake.coordinates[0]
+    if x < 0 or x>= GAME_WIDTH:
+        return True
+    elif y < 0 or y>= GAME_HEIGHT:
+        return True
+    for body_part in snake.coordinates[1:]:
+        if x == body_part[0] and y == body_part[1]:
+            print("Game over")
+            return True
+    return False
+    
+def game_over():
+    canvas.delete(ALL)
+    canvas.create_text(canvas.winfo_width()/2, 
+                       canvas.winfo_height()/2, 
+                       font = ('consolas',70), 
+                       text="GAME OVER!", 
+                       fill="red",
+                       tag="gameover")         
+
+window = Tk()
+window.title("Snake Game")
+window.resizable(False,False)
+
+score = 0
+direction = "down"
+
+label = Label(window,text = "Score:{}".format(score), font = ('consolas', 40))
+label.pack()
+
+canvas = Canvas(window, bg=BACKGROUND_COLOR, height = GAME_HEIGHT, width = GAME_WIDTH)
+canvas.pack()
+
+window.update()
+window_width = window.winfo_width()
+window_height = window.winfo_height()
+screen_width = window.winfo_screenwidth()
+screen_height = window.winfo_screenheight()
+
+x = int((screen_width/2) - (window_width/2))
+y = int((screen_height/2) - (window_height/2))
+
+window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+window.bind('<Left>', lambda event: change_direction('left'))
+window.bind('<Right>', lambda event: change_direction('right'))
+window.bind('<Up>', lambda event: change_direction('up'))
+window.bind('<Down>', lambda event: change_direction('down'))
+
+
+snake = Snake()
+food = Food()
+
+next_turn(snake, food)
+
+window.mainloop()
