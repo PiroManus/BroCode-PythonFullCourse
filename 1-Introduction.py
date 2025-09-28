@@ -2018,3 +2018,288 @@ edit_menu.add_command(label="Copy", command=copy)
 edit_menu.add_command(label="Paste", command=paste)
 
 window.mainloop()
+
+
+#Lesson 81: Frames
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+# frame = a rectangular container to group and hold widgets
+
+from tkinter import *
+
+window = Tk()
+
+#button = Button(window,text='W', font=('Consolas', 25), width=3)
+#button.pack()
+
+frame = Frame(window, bg='pink', bd=5,relief=RAISED)
+#frame.pack(BOTTOM) #place below this replaces this function.
+frame.place(x=0,y=0)
+
+
+Button(frame,text='W', font=('Consolas', 25), width=3).pack(side=TOP)
+Button(frame,text='A', font=('Consolas', 25), width=3).pack(side=LEFT)
+Button(frame,text='S', font=('Consolas', 25), width=3).pack(side=LEFT)
+Button(frame,text='D', font=('Consolas', 25), width=3).pack(side=LEFT)
+
+window.mainloop()
+
+
+#Lesson 82: New Window
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+
+def window_create():
+    # window_new = Toplevel() #this new window is dependent on main window.
+    window_new = Tk() #this new window is not dependent on main window.
+    window_old.destroy()  # this creates a new window and closes out of old window.
+
+window_old = Tk()
+
+Button(window_old,text='create new window', command=window_create).pack()
+
+window_old.mainloop()
+
+
+#Lesson 83: Window Tabs
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+from tkinter import ttk
+
+window = Tk()
+
+notebook = ttk.Notebook(window)  # widget that managed a collection of windows/displays
+
+tab1=Frame(notebook)  #this will be new frame for tab 1
+tab2=Frame(notebook)
+notebook.add(tab1, text='Tab 1')
+notebook.add(tab2, text='Tab 2')
+notebook.pack(expand=True, fill='both')  #expand = expand to fill any space not used.
+                                            # fill = fill space on x and y axis.
+
+Label(tab1,text='Hello, this is tab #1', width=50, height=25).pack()
+Label(tab2,text='Goodbye, this is tab #2', width=50, height=25).pack()
+
+window.mainloop()
+
+
+#Lesson 84: Grid
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+# grid()= geometry manager that organizes widgets in a table-like structure in a
+
+from tkinter import *
+
+window = Tk()
+
+titleLabel = Label(window,text="Enter your info", font=('Arial', 15)).grid(row=0,column=0, columnspan=2)
+
+firstNameLabel = Label(window,text='First name: ', width=20,bg='red').grid(row=1, column=0)
+firstNameEntry = Entry(window).grid(row=1, column=1)
+
+lastNameLabel = Label(window,text='Last name: ', bg='green').grid(row=2, column=0)
+lastNameEntry = Entry(window).grid(row=2, column=1)
+
+emailLabel = Label(window,text='email: ', width=30,bg='blue').grid(row=3, column=0)
+emailEntry = Entry(window).grid(row=3, column=1)
+
+submitButton = Button(window, text='Submit').grid(row=4, columnspan=2)
+
+window.mainloop()
+
+
+#Lesson 85: Progress Bar
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+import time
+from tkinter import *
+from tkinter.ttk import *
+
+def start():
+    tasks = 10
+    x= 0
+    while(x<tasks):
+        time.sleep(1)
+        bar['value']+=10
+        x+=1
+        percent.set(str(int((x/tasks)*100))+"%")
+        text.set(str(x)+"/"+str(tasks)+" tasks completed")
+        window.update_idletasks()
+
+window = Tk()
+
+percent = StringVar()
+text = StringVar()
+
+bar = Progressbar(window,orient=HORIZONTAL, length=300)
+bar.pack(pady=10)
+
+percentLabel = Label(window,textvariable=percent).pack()
+taskLabel = Label(window,textvariable=text).pack()
+
+button = Button(window,text='download', command=start).pack()
+
+window.mainloop()
+
+
+#Lesson 86: Canvas
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+# canvas = widget that is used to draw graphs, plots, images in a window.
+
+from tkinter import *
+
+window = Tk()
+
+canvas = Canvas(window, height=500, width=500)
+#blueLine=canvas.create_line(0,0,500,500, fill='blue', width=5)  # can set this to a value
+#redLine=canvas.create_line(0,500,500,0, fill='red', width=5) # notice this is overlaping blue line.
+#canvas.create_rectangle(50,50,250,250, fill='purple')
+#points = 250,0,500,500,0,500
+#canvas.create_polygon(points, fill='yellow', outline='black', width=5)
+#canvas.create_arc(0,0,500,500, fill='green', style=PIESLICE, start=180, extent=180)
+
+#create a pokibal
+canvas.create_arc(0,0,500,500, fill='red', extent=180, width=10)
+canvas.create_arc(0,0,500,500, fill='white', extent=180,start=180, width=10)
+canvas.create_oval(190,190,310,310, fill='white', width=10)
+canvas.pack()
+
+window.mainloop()
+
+
+#Lesson 87: Keyboard Events
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import  *
+
+def doSomething(event):
+    print("You pressed:" + event.keysym)
+    label.config(text=event.keysym)
+
+window = Tk()
+
+# return is enter. Key is any key.
+window.bind("<Return>", doSomething)
+window.bind("<Key>", doSomething)
+
+label = Label(window,font=('Helvetica', 100))
+label.pack()
+
+window.mainloop()
+
+
+#Lesson 88: Mouse Events
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+
+def doSomething(event):
+    # this shows where the mouse button was clicked on screen
+    print("Mouse coordinates: "+str(event.x)+","+str(event.y))
+
+window = Tk()
+
+window.bind('<Button-1>', doSomething)  # left mouse button click
+window.bind('<Button-2>', doSomething)  # mouse scroll wheel
+window.bind('<Button-3>', doSomething)  # right mouse button click
+window.bind('<ButtonRelease>', doSomething)  # shows where the button release happened
+window.bind('<Enter>', doSomething)  # enter the window
+window.bind('<Leave>', doSomething)  # leave the window
+window.bind('<Motion>', doSomething)  # where the mouse moved
+
+window.mainloop()
+
+
+#Lesson 89: Drag and Drop
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+
+def drag_start(event):
+    widget = event.widget
+    widget.startX = event.x
+    widget.startY = event.y
+
+def drag_motion(event):
+    widget = event.widget
+    x = widget.winfo_x() - widget.startX + event.x
+    y = widget.winfo_y() - widget.startY + event.y
+    widget.place(x=x,y=y)
+
+window = Tk()
+
+label = Label(window,background='red', width=10, height=5)
+label.place(x=0, y=0)
+
+label2 = Label(window,background='blue', width=10, height=5)
+label2.place(x=100, y=100)
+
+label.bind('<Button-1>',drag_start) #(event,function)
+label.bind('<B1-Motion>',drag_motion)
+
+label2.bind('<Button-1>',drag_start) #(event,function)
+label2.bind('<B1-Motion>',drag_motion)
+
+window.mainloop()
+
+
+#Lesson 90: Move image with keys
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+
+def move_up(event):
+    label.place(x=label.winfo_x(), y=label.winfo_y()-10)
+def move_down(event):
+    label.place(x=label.winfo_x(), y=label.winfo_y()+10)
+def move_left(event):
+    label.place(x=label.winfo_x()-10, y=label.winfo_y())
+def move_right(event):
+    label.place(x=label.winfo_x()+10, y=label.winfo_y())
+
+window = Tk()
+window.geometry("500x500")
+
+window.bind('<w>', move_up)
+window.bind('<s>', move_down)
+window.bind('<a>', move_left)
+window.bind('<d>', move_right)
+
+myimage = PhotoImage(file='racecar.png')
+label = Label(window,image=myimage)
+label.place(x=0,y=0)
+
+window.mainloop()
+
+
+#Lesson 90-b: Moving image on canvas
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+
+def move_up(event):
+    canvas.move(myimage,0,-10)
+def move_down(event):
+    canvas.move(myimage,0,10)
+def move_left(event):
+    canvas.move(myimage,-10,0)
+def move_right(event):
+    canvas.move(myimage,10,0)
+
+window = Tk()
+
+window.bind('<w>',move_up)
+window.bind('<s>',move_down)
+window.bind('<a>',move_left)
+window.bind('<d>',move_right)
+window.bind('<Up>',move_up)
+window.bind('<Down>',move_down)
+window.bind('<Left>',move_left)
+window.bind('<Right>',move_right)
+
+canvas = Canvas(window,width=500,height=500)
+canvas.pack()
+
+photoimage = PhotoImage(file='racecar.png')
+myimage = canvas.create_image(0,0, image=photoimage, anchor=NW)
+
+window.mainloop()
