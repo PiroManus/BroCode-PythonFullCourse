@@ -1362,3 +1362,659 @@ desc_cities4  = {key:check_temp(value) for (key,value) in cities.items()}
 print(desc_cities4)
 
 
+#Lesson 61: Zip Function
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# zip(*iterables) = aggregate elements from two or more iterables (list, tuples, sets, etc.)
+#                   creates a zip object with paired elements stored in tuples for each element
+
+username = ["Dude", "Bro", "Mister"]
+passwords = ("passwprd", "abc123", "guest")
+users = dict(zip(username, passwords))
+# users = list(zip(username, passwords)) can also make this into a list zip.
+print(type(users))
+
+for i in users:
+    print(i)
+
+for key, value in users.items():
+    print(key+" : "+value)
+
+
+#Lesson 62:  if _name_ == '__main__'
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# Python interpreter sets "special variables", one of which is __name__
+# Python will assign the __name__ variable a value of '__main__' if it is
+# the initial module being run.
+
+def main():
+    print("Hello")
+
+if __name__ == '__main__':
+    main()
+
+
+#Lesson 63:Time Module
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+import time
+
+print(time.ctime(0))    # convert a time expressed in seconds epoch to a readable string
+                        # epoch = when your computer thinks time began (reference point)
+print(time.time())  # return current seconds since epoch
+print(time.ctime(time.time())) # will get current time.
+time_object = time.localtime()
+time_object = time.gmtime() # this is UTC time.
+print(time_object)
+local_time = time.strftime("%B %d %Y %H: %M:%S", time_object) # go to python offical documentation
+print(local_time)
+
+time_string = "20 April, 2020"
+time_object = time.strptime(time_string, "%d %B, %Y") # this parse a string a return time object.
+print(time_object)
+
+# asctime will accept tuple format.
+time_tuple = (2020, 4, 20, 4, 20, 0, 0, 0, 0)
+time_string = time.asctime(time_tuple) # accepts a tuple representation of time.
+print(time_string)
+
+# mktime will take time and convert it to seconds since epoch.
+time_tuple = (2020, 4, 20, 4, 20, 0, 0, 0, 0)
+time_string = time.mktime(time_tuple) # accepts a tuple representation of time.
+print(time_string)
+
+
+#Lesson 64:Threading
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# thread = a flow of execution, like a separate order of instructions.
+#               However each thread takes a turn running to achieve concurrency
+#               GIL = Global interpreter lock, allows only one thread to hold
+#               control of the python interpreter at any one time
+
+# CPU bound = program/task spends mos of its time waiting for internal events
+#               (CPU intensive). Use multiprocessing.
+
+# io bound = program/task spends most of its time waiting for external events
+#               (user input, web scraping). use multithreading.
+
+import threading
+import time
+
+# in the example below, lots of time will be IO bound as waiting for sleep
+# so running on main thread see it takes 12 seconds.
+def eat_breakfast():
+    time.sleep(3)
+    print("You eat breakfast")
+
+def drink_coffee():
+    time.sleep(4)
+    print("You drink coffee")
+
+def study():
+    time.sleep(5)
+    print("You finish studying")
+
+#eat_breakfast()
+#drink_coffee()
+#study()
+# these tasks were complete sequentailly.
+#  but realistically we as humans these tasks can be completed together.
+# so basically multithreading.
+
+x = threading.Thread(target=eat_breakfast, args=())
+x.start()
+y = threading.Thread(target=drink_coffee, args=())
+y.start()
+z = threading.Thread(target=study, args=())
+z.start()
+# this program only took 5 seconds as there were 4 threads running.
+# these threads were run concurrently.
+# active count and enumerate were called first as main thread called these first
+
+# if want our main thread to wait for 3 instructive threads, use join below.
+x.join()
+y.join()
+z.join()
+
+print(threading.active_count())
+print(threading.enumerate())
+print(time.perf_counter())  # trick to return how long calling thread/main
+# thread to finish instructions. main thread is in charge of creating 3 additonal threads.
+
+
+#Lesson 65:Daemon Thread
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+# daemon thread = a thread that runs in the background, not important for program to run
+#               your program will not wait for daemon threads to complete before exiting
+#               non-daemon threads cannot normally be killed, stay alive until task is complete
+#
+#               Daemon thread examples: background tasks, garbage collection, waiting for input, long running processes
+
+import threading
+import time
+def timer():
+    print()
+    print()
+    count = 0
+    while True:
+        time.sleep(1)
+        count += 1
+        print("Logged in for: ", count, "seconds")
+
+# if dont change it to daemon thread, will continue
+# x = threading.Thread(target=timer)
+x = threading.Thread(target=timer, daemon=True)
+x.start()
+
+answer = input("Do you wish to exit?")
+
+# this is a way to set daemon thread to true or false
+# x.setDaemon(True)
+# this returns true of false
+# print(x.isDaemon())
+
+
+#Lesson 66: Multiprocessing
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# multiprocessing = running tasks in parallel on different cpu cores, bypassing GIL used for threading
+#                   multiprocessing = better for cpu bound tasks (heavy CPU usage)
+#                   multithreading = better for io bound tasks (waiting around)
+
+from multiprocessing import Process, cpu_count
+import time
+
+def counter(num):
+    count = 0
+    while count < num:
+        count += 1
+
+def main():
+# this way below with only is if dont have multiprocessing
+#    a = Process(target= counter, args=(1000,))
+#    a.start
+#    a.join
+    print(cpu_count())
+    a = Process(target=counter, args=(500,))
+    b = Process(target=counter, args=(500,))
+    a.start()
+    b.start()
+    a.join()
+    b.join()
+    print("Finished in:", time.perf_counter(), "Seconds")
+
+# for some reason, my results are seconds since something? I got 103233 while it should be ~15 seconds.
+if __name__ == '__main__':
+    main()
+
+
+#Lesson 67: GUI Windows
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+
+from tkinter import *
+
+# widgets = GUI elements: buttons, textboxes, labels, images
+# windows = serves as a container to hold or contain these widgets
+
+window = Tk() #instantiate an instance of a window
+window.geometry("420x420")
+window.title("Bro Code first GUI program")
+
+icon = PhotoImage(file='logo.png')
+window.iconphoto(True, icon)
+window.config(background="black")
+#window.config(background="#5cfcff") #this is a hexadecimal color value.
+
+window.mainloop() #place window on computer screen, listen for events
+
+
+#Lesson 68: Labels
+# https://www.youtube.com/watch?v=XKHEtdqhLK8
+# labels = an area widget that holds text and/or an image within a window
+
+from tkinter import *
+
+window = Tk()
+
+photo =PhotoImage(file='person.png')
+
+#simple way to have a label.
+#label = Label(window, text='Hello World')
+#label.place(x=0,y=0) # this will place the label in a certain position
+
+label = Label(window,
+              text = 'Bro, do you even code?',
+              font = ('Arial', 40, 'bold'),
+              fg = '#00FF00',
+              bg = 'black',
+              relief = RAISED,
+              bd = 10,
+              padx = 20,
+              pady=20,
+              image = photo,
+              compound="bottom")
+label.pack()
+
+window.mainloop()
+
+
+#Lesson 69: Buttons
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+# button = you click it, then it does stuff
+
+from tkinter import *
+window = Tk()
+
+count = 0
+def click():
+    global count
+    count+=1
+    print(count)
+
+photo = PhotoImage(file='like.png')
+
+button = Button(window,
+                text="click me!",
+                command = click,
+                font = ("Comic Sans", 30),
+                fg = "#00FF00",
+                bg = "black",
+                activeforeground="#00FF00",
+                activebackground="black",
+                state=ACTIVE,
+                image=photo,
+                compound='bottom')
+button.pack()
+window.mainloop()
+
+
+#Lesson 70: Entrybox
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+#entry widet = textbox that accepts a single line of user input
+from tkinter import *
+
+def submit():
+    username = entry.get()
+    print("Hello "+username)
+    entry.config(state=DISABLED)  # this makes it so unable to make changes once click submit.
+
+def delete():
+    entry.delete(0,END)
+
+def backspace():
+    entry.delete(len(entry.get())-1,END)
+
+window = Tk()
+
+entry = Entry(window, font=("Arial", 50),
+              fg="#00FF00",
+              bg="black",
+              show="*")   #this is a good way to hide what user is writing, good with passwords. 
+entry.insert(0,'Default Text')
+entry.pack(side =LEFT)
+
+submit_button = Button(window,text="submit", command=submit)
+submit_button.pack(side = RIGHT)
+
+delete_button = Button(window,text="delete", command=delete)
+delete_button.pack(side = RIGHT)
+
+backspace_button = Button(window,text="backspace", command=backspace)
+backspace_button.pack(side = RIGHT)
+
+window.mainloop()
+
+
+#Lesson 71: Checkbox
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+
+def display():
+    if(x.get()==1):
+        print("You agree!")
+    else:
+        print("You do not agree")
+
+window = Tk()
+x = IntVar()  #returns 1 or 0
+python_photo = PhotoImage(file= 'Python Image.png')
+
+check_button= Checkbutton(window,
+                          text='I agree to something',
+                          variable=x,
+                          onvalue=1,
+                          offvalue=0,
+                          command = display,
+                          font=('Arial', 20),
+                          foreground='#00FF00',
+                          background="black",
+                          activeforeground='#00FF00',
+                          activebackground = "black",
+                          padx=25,
+                          pady=10,
+                          image=python_photo,
+                          compound='left')
+
+check_button.pack()
+window.mainloop()
+
+
+#Lesson 72: Radio Buttons
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+# radio button = similar to checkbox, but you can only select one from a group
+#I believe the pictures are too large so this isnt working.
+
+from tkinter import *
+
+food = ['pizza', 'hamburger', 'hotdog']
+
+def order():
+    if(x.get()==0):
+        print('You ordered pizza!')
+    elif(x.get()==1):
+        print('You ordered a hotdog')
+    elif(x.get()==2):
+        print('You ordered a hamburger')
+    else:
+        print('huh?')
+
+window = Tk()
+Image_Pizza = PhotoImage(file='pizza.png')
+Image_Hotdog = PhotoImage(file='Hotdog.png')
+Image_Hamburger = PhotoImage(file='Hambuger.png')
+Food_Images = [Image_Pizza, Image_Hamburger, Image_Hotdog]
+
+x = IntVar()
+
+for index in range(len(food)):
+    radiobutton = Radiobutton(window,
+                              text=food[index], #adds text to radio buttons
+                              variable=x, #groups radiobuttons together if they share
+                              value=index, #assigns each radiobutton a different value.
+                              padx=25, #adds padding on x-axis
+                              font=("Impact",50),
+                              image=Food_Images[index], # this adds image to radio button
+                              compound='left',   #adds image & text left side
+                              indicatoron=0, #eliminate circle indicators
+                              width=375,
+                              command=order # this will set command of radio button to function.
+                              )
+    radiobutton.pack(anchor=W)
+
+window.mainloop()
+
+
+#Lesson 73: Scale
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+
+def submit():
+    print("The temperature is: "+ str(scale.get())+ " degrees C")
+
+window = Tk()
+#below adds image to the scale.
+#hotImage = PhotoImage(file = 'hot.png')
+#hotLabel = Label(image=hotImage)
+#hotLabel.pack()
+
+scale = Scale(window,
+              from_=100,
+              to=0,
+              length=600,
+              orient=VERTICAL,
+              font = ('Consolas',20),
+              tickinterval = 10, #this adds numeric indicators for value
+              showvalue = 0,   #hides current value
+              troughcolor = 'blue',
+              fg = '#FF1C00',
+              bg = 'black')
+#scale.set(100)   # this sets default slider. below sets it to the middle.
+scale.set(((scale['from']-scale['to'])/2)+scale['to'])
+scale.pack()
+
+button = Button(window,text='submit', command=submit)
+button.pack()
+
+window.mainloop()
+
+
+#Lesson 74: Listbox
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+#listbox = a listing of slectable text items within its own container
+
+from tkinter import *
+
+window = Tk()
+def submit():
+    food=[]
+    for index in listbox.curselection():
+        food.insert(index,listbox.get(index))
+
+    print("You have ordered: ")
+    for index in food:
+        print(index)
+
+def add():
+    listbox.insert(listbox.size(),EntryBox.get())
+    listbox.config(height=listbox.size())
+
+def delete():
+    for index in reversed(listbox.curselection()):
+        listbox.delete(index)
+#    listbox.delete(listbox.curselection())  way to delete only one.
+    listbox.config(height=listbox.size())
+
+listbox=Listbox(window,
+                bg='#f7ffde',
+                font=("Constantia", 35),
+                width=12,
+                height=10,
+                selectmode=MULTIPLE)
+listbox.pack()
+
+listbox.insert(1,'pizza')
+listbox.insert(2,'pasta')
+listbox.insert(3,'garlic bread')
+listbox.insert(4,'soup')
+listbox.insert(5,'salad')
+listbox.config(height=listbox.size())
+
+EntryBox = Entry(window)
+EntryBox.pack()
+
+SubmitButton = Button(window,text='submit', command=submit)
+SubmitButton.pack()
+
+AddButton = Button(window,text='add', command=add)
+AddButton.pack()
+
+DeleteButton = Button(window,text='delete', command=delete)
+DeleteButton.pack()
+
+
+window.mainloop()
+
+
+#Lesson 75: Messagebox
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+from tkinter import messagebox #import messagebox library
+
+def click():
+#    messagebox.showinfo(title='This is an info message box', message='You are a person') # displays a simple message.
+#    messagebox.showwarning(title='WARNING!', message='You have a VIRUS!!!') # displays a warning message.
+#    messagebox.showerror(title='ERROR!', message='Something went wrong')
+
+#the if-else statement below is useful to ask for a decision from user
+#    if messagebox.askokcancel(title='ask ok cancel', message='Do you want to do the thing?'):
+#        print('You did a thing!')
+#    else:
+#        print('You canceled a thing!')
+
+#    if messagebox.askretrycancel(title='ask ok cancel', message='Do you want to retry the thing?'):
+#        print('You retried a thing!')
+#    else:
+#        print('You canceled a thing!')
+
+#    if messagebox.askyesno(title='ask yes or no', message='Do you like cake?'):
+#        print('I like cake too')
+#    else:
+#        print('Why do you not like cake?')
+
+#    answer = messagebox.askquestion(title='ask question', message='Do you like pie?')
+#    if (answer == 'yes'):
+#        print('I like pie too')
+#    else:
+#        print('Why do you not like pie?')
+
+# for icon can also use info and error
+    answer = messagebox.askyesnocancel(title='Yes no cancel', message='Do you like to code?',icon='warning')
+    if(answer == True):
+        print('You like to code!')
+    elif(answer == False):
+        print('Then why are you watching a video on coding?')
+    else:
+        print('You have dodged the question.')
+
+window = Tk()
+
+button = Button(window,command=click,text='click me')
+button.pack()
+
+window.mainloop()
+
+
+#Lesson 76: Color chooser
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+from tkinter import colorchooser  #submodule. not necessary.
+
+def click():
+#    window.config(bg=colorchooser.askcolor()[1])  #one line of code version of below.
+    color = colorchooser.askcolor() #assign color to a variable
+    color_Hex = color[1]            #assigns element at index 1 to a varaible
+    window.config(bg=color_Hex)     #change background color
+
+window = Tk()
+window.geometry('420x420')
+button = Button(text='click me', command=click)
+button.pack()
+window.mainloop()
+
+
+#Lesson 77: Text Area
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+# text widget = functions like a text area, you can enter multiple lines of text
+
+from tkinter import *
+
+def submit():
+    input = text.get("1.0", END)
+    print(input)
+
+window = Tk()
+text = Text(window,
+            bg="light yellow",
+            font=("Ink Free",16),
+            height=8,
+            width=20,
+            padx=20,
+            pady=20,
+            fg="blue")
+text.pack()
+button = Button(window,text="submit", command=submit)
+button.pack()
+window.mainloop()
+
+
+#Lesson 78: Open a file
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+from tkinter import filedialog
+
+def open_File():
+    filepath = filedialog.askopenfilename(initialdir='C://Users//WilliamBillCorkery//PycharmProjects//BroCode-PythonFullCourse',
+                                          title="Open File Please",
+                                          filetypes=(('text files','*.txt'),
+                                          ('all files', '*.*')))
+    file = open(filepath,'r')
+    print(file.read())
+    print(filepath)
+    file.close()
+
+window = Tk()
+button = Button(text="Open", command=open_File())
+button.pack()
+window.mainloop()
+
+
+#Lesson 79:Save a File
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+
+from tkinter import *
+from tkinter import filedialog
+
+def save_file():
+    file = filedialog.asksaveasfile(initialdir='C://Users//WilliamBillCorkery//PycharmProjects//BroCode-PythonFullCourse',
+                                    defaultextension='.txt',
+                                    filetypes=[('Text File', '.txt'),
+                                               ('HTML file', '.html'),
+                                               ('All files', '.*')])
+    if file is None:
+        return # this is a way to make sure no error.
+    file_text = str(text.get(1.0,END))
+    # file_text = input("Enter some text I guess: ") #This is good but can do below if want to enter text via console
+    file.write(file_text)
+    file.close()
+
+window = Tk()
+button = Button(text="save", command=save_file)
+button.pack()
+text = Text(window)
+text.pack()
+window.mainloop()
+
+
+#Lesson 80: Menu Bar
+# https://www.youtube.com/watch?v=xiUTqnI6xk8
+from tkinter import *
+
+def open_file():
+    print("File has been opened")
+def save_file():
+    print("File has been saved")
+def cut():
+    print("You cut some text")
+def copy():
+    print("You copied some text")
+def paste():
+    print("You pasted some text")
+
+window = Tk()
+
+#If want to add images
+#open_image = PhotoImage(file='file.png')
+#save_image = PhotoImage(file='save.png')
+#exit_image = PhotoImage(file='exit.png')
+
+menubar = Menu(window)
+window.config(menu=menubar)
+
+file_menu = Menu(menubar, tearoff=0, font=('MV Boli', 15))
+menubar.add_cascade(label="File", menu=file_menu)
+file_menu.add_command(label="Open", command=open_file) #image=open_image, compound='left')
+file_menu.add_command(label="Save", command=save_file) #image=save_image, compound='left')
+file_menu.add_separator()
+file_menu.add_command(label="Exit", command=quit) #image=exit_image, compound='left' )
+
+edit_menu = Menu(menubar, tearoff=0)
+menubar.add_cascade(label="Edit", menu=edit_menu)
+edit_menu.add_command(label="Cut", command=cut)
+edit_menu.add_command(label="Copy", command=copy)
+edit_menu.add_command(label="Paste", command=paste)
+
+window.mainloop()
